@@ -18,12 +18,12 @@ namespace GuestBook.Controllers
             _context = context;
         }
 
-        // GET: Comment
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            return _context.Comments != null ?
-                          View(await _context.Comments.OrderByDescending(x=> x.CreatedDate).ToListAsync()) :
-                          Problem("Entity set 'CommentDbContext.Comments'  is null.");
+            var comments = from comment in _context.Comments
+                           select comment;
+            int pageSize = 5;
+            return View(await PaginatedList<Comment>.CreateAsync(comments.OrderByDescending(x=> x.CreatedDate).AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Comment/Details/5
