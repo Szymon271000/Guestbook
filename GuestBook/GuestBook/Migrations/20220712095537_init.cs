@@ -15,6 +15,7 @@ namespace GuestBook.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
