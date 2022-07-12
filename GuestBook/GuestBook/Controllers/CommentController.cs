@@ -21,28 +21,12 @@ namespace GuestBook.Controllers
         // GET: Comment
         public async Task<IActionResult> Index()
         {
-              return _context.Comments != null ? 
-                          View(await _context.Comments.ToListAsync()) :
+            return _context.Comments != null ?
+                          View(await _context.Comments.OrderByDescending(x=> x.CreatedDate).ToListAsync()) :
                           Problem("Entity set 'CommentDbContext.Comments'  is null.");
         }
 
         // GET: Comment/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Comments == null)
-            {
-                return NotFound();
-            }
-
-            var comment = await _context.Comments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            return View(comment);
-        }
 
         // GET: Comment/AddOrEdit
         public IActionResult AddOrEdit(int id = 0)
@@ -98,5 +82,6 @@ namespace GuestBook.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
