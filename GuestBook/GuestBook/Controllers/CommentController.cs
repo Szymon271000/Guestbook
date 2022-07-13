@@ -6,36 +6,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GuestBook.Models;
+using GuestBook.Data;
 
 namespace GuestBook.Controllers
 {
     public class CommentController : Controller
     {
-        private readonly CommentDbContext _context;
 
-        public CommentController(CommentDbContext context)
+        private IBaseRepository<Comment> _repository;
+
+        public CommentController(IBaseRepository<Comment> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<IActionResult> Index(int? pageNumber)
         {
-            
-            var comments = from comment in _context.Comments
-                           select comment;
             int pageSize = 5;
-            return View(await PaginatedList<Comment>.CreateAsync(comments.OrderByDescending(x=> x.CreatedDate).AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await _repository.GetPage(pageNumber??1, pageSize));
         }
 
         // GET: Comment/Details/5
 
         // GET: Comment/AddOrEdit
-        public IActionResult AddOrEdit(int id = 0)
+        public async Task <IActionResult> AddOrEdit(int id = 0)
         {
             if(id== 0)
                 return View(new Comment());
             else
-                return View(_context.Comments.Find(id));
+                return View(await _repository.GetById(id));
         }
 
         // POST: Comment/AddOrEdit
@@ -49,15 +48,12 @@ namespace GuestBook.Controllers
             {
                 if (comment.Id == 0)
                 {
-                    comment.CreatedDate = DateTime.Now;
-                    _context.Add(comment);
+                    await _repository.Add(comment);
                 }
                 else
                 {
-                    _context.Update(comment);
-                    comment.CreatedDate = DateTime.Now;
+                    await _repository.Update(comment);                    
                 }
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(comment);
@@ -70,17 +66,11 @@ namespace GuestBook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Comments == null)
-            {
-                return Problem("Entity set 'CommentDbContext.Comments'  is null.");
-            }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _repository.GetById(id);
             if (comment != null)
             {
-                _context.Comments.Remove(comment);
+                _repository.Delete(comment);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
