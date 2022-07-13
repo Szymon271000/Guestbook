@@ -8,7 +8,7 @@
 <h1>GuestBook</h1>
 
 <div class="col-md-5">
-        <form method="GET" asp-action="Index" class="row" >
+        <form method="GET" asp-action="Index" class="row" autocomplete="off" >
         <div class=" col-xs-1">
         <input type='number' name="pageNumber" value="" min="1", max= "@Model.TotalPages">
         <input type="submit" class="btn btn-primary" value="Choose page" a>
