@@ -20,6 +20,7 @@ namespace GuestBook.Controllers
 
         public async Task<IActionResult> Index(int? pageNumber)
         {
+            
             var comments = from comment in _context.Comments
                            select comment;
             int pageSize = 5;
@@ -62,7 +63,7 @@ namespace GuestBook.Controllers
             return View(comment);
         }
 
-        
+
 
         // POST: Comment/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -78,7 +79,7 @@ namespace GuestBook.Controllers
             {
                 _context.Comments.Remove(comment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

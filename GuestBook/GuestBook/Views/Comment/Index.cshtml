@@ -5,11 +5,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>GuestBook</h1>
 
-<p>
-    
-</p>
+<div class="col-md-5">
+        <form method="GET" asp-action="Index" class="row" >
+        <div class=" col-xs-1">
+        <input type='number' name="pageNumber" value="" min="1", max= "@Model.TotalPages">
+        <input type="submit" class="btn btn-primary" value="Choose page" a>
+        </div>
+        </form>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -23,7 +28,7 @@
                 Description
             </th>
             <th>
-                CreatedDate
+                Created Date
             </th>
             <th>
                 <a asp-action="AddOrEdit" class="btn btn-sm btn-success">
@@ -52,7 +57,7 @@
                     <div class="btn-group btn-group-sm">
                         <a asp-action="AddOrEdit" asp-route-id="@item.Id" class="btn btn-warning">
                         <i class="fa-solid fa-pen-to-square"></i>
-                        </a> 
+                        </a>
                         <button type="submit" class="btn btn-danger"
                         onclick="return confirm('Are you sure to delete this record?')"><i class="far fa-trash-alt"></i>
                         </button>
@@ -70,16 +75,12 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>
